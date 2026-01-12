@@ -1,0 +1,729 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+html, body {
+  width: 100%;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+/* ================= HERO SECTION ================= */
+.hero {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: url(background/bridge.jpg) center / cover no-repeat;
+}
+
+@media (max-width: 768px) {
+  .hero {
+    background-attachment: scroll;
+  }
+}
+
+.tilt-inner {
+  padding: 50px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 30px;
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  gap: 50px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  transform-style: preserve-3d;
+  transition: transform 0.15s ease-out;
+  box-shadow: 0 8px 30px rgba(143, 0, 255, 0.4);
+}
+
+.hero-image {
+  flex: 1 1 300px;
+  max-width: 400px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+
+.hero-image img {
+  width: 100%;
+  display: block;
+}
+
+.hero-text {
+  max-width: 500px;
+}
+
+.hero-text h1 {
+  font-size: 4rem;
+  line-height: 1.1;
+}
+
+.hero-text h1 span {
+  color: #8f00ff;
+}
+
+.hero-text .glow {
+  font-size: 35px;
+  color: #ffffff;
+  text-align: center;
+  -webkit-animation: glow 1s ease-in-out infinite alternate;
+  -moz-animation: glow 1s ease-in-out infinite alternate;
+  animation: glow 1s ease-in-out infinite alternate;
+}
+
+@-webkit-keyframes glow {
+  from {
+    text-shadow: 0 0 10px #000000, 0 0 20px #fff, 0 0 30px #000000, 0 0 40px #000000, 0 0 50px #ffffff, 0 0 60px #000000, 0 0 70px #000000;
+  }
+  to {
+    text-shadow: 0 0 20px #fff, 0 0 30px #ff4da6, 0 0 40px #ff4da6, 0 0 50px #ff4da6, 0 0 60px #ffffff, 0 0 70px #ffffff, 0 0 80px #ffffff;
+  }
+}
+
+.hero-text p {
+  font-size: 1.2rem;
+  margin: 15px 0;
+}
+
+/* ================= SOFTWARE LOGOS ================= */
+.software-logos {
+  margin-top: 25px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.software-logos img {
+  height: 70px;
+  transition: transform 0.3s ease;
+}
+
+.software-logos img:hover {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 6px #8f00ff);
+}
+
+/* ================= LIQUID BUTTON ================= */
+.liquid-btn {
+  display: inline-block;
+  padding: 15px 35px;
+  border-radius: 50px;
+  color: white;
+  text-decoration: none;
+  background: rgba(255,255,255,0.12);
+  border: 1.5px solid rgba(255,255,255,0.3);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+  margin: 10px;
+  transition: transform 0.3s ease;
+}
+
+.liquid-btn:hover {
+  transform: translateY(-3px);
+}
+
+.liquid-btn::before {
+  content: '';
+  position: absolute;
+  inset: -60%;
+  background: radial-gradient(circle, rgba(255,255,255,0.4), transparent 60%);
+  animation: shine 3.5s infinite;
+}
+
+@keyframes shine {
+  0% { transform: translateX(-40%); }
+  50% { transform: translateX(40%); }
+  100% { transform: translateX(-40%); }
+}
+
+/* ================= SHOWCASE ================= */
+.showcase-section {
+  padding: 80px 20px;
+  background: linear-gradient(135deg, #1a0a3a, #2e0057);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.showcase-section h2 {
+  font-size: 3rem;
+  margin-bottom: 50px;
+  background: linear-gradient(90deg, #8f00ff, #d46aff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============ HORIZONTAL SCROLL ============ */
+.horizontal-scroll {
+  display: flex;
+  gap: 30px;
+  overflow-x: auto;
+  padding: 20px 10px 40px 10px;
+  scroll-snap-type: x mandatory;
+  cursor: grab;
+  width: 100%;
+  max-width: 1400px;
+}
+
+.horizontal-scroll:active {
+  cursor: grabbing;
+}
+
+.horizontal-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+
+.horizontal-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.horizontal-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #8f00ff, #d46aff);
+  border-radius: 10px;
+}
+
+.horizontal-scroll::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(90deg, #a42cff, #e07dff);
+}
+
+/* ============ CARD DESIGN ============ */
+.card {
+  flex: 0 0 320px;
+  background: linear-gradient(145deg, #2a1a4a, #3b2670);
+  border-radius: 25px;
+  padding: 20px;
+  scroll-snap-align: start;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+              box-shadow 0.4s ease;
+  opacity: 0;
+  transform: translateY(30px) scale(0.95);
+  animation: cardEntrance 0.6s forwards;
+  border: 1px solid rgba(143, 0, 255, 0.2);
+}
+
+@keyframes cardEntrance {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.card:nth-child(1) { animation-delay: 0.1s; }
+.card:nth-child(2) { animation-delay: 0.2s; }
+.card:nth-child(3) { animation-delay: 0.3s; }
+.card:nth-child(4) { animation-delay: 0.4s; }
+
+.card:hover {
+  transform: translateY(-10px) scale(1.03);
+  box-shadow: 0 25px 50px rgba(143, 0, 255, 0.3),
+              0 0 80px rgba(143, 0, 255, 0.2);
+  border-color: rgba(143, 0, 255, 0.4);
+}
+
+/* ============ VIDEO CONTAINER ============ */
+.video-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #000;
+  transition: all 0.4s ease;
+  cursor: pointer;
+}
+
+.card:hover .video-container {
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+}
+
+.video-container video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+  filter: brightness(0.9) saturate(1.1);
+}
+
+.card:hover .video-container video {
+  transform: scale(1.05);
+  filter: brightness(1) saturate(1.3);
+}
+
+/* ============ PLAY/PAUSE OVERLAY ============ */
+.video-container::before {
+  content: "▶";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  background: rgba(143, 0, 255, 0.85);
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: white;
+  z-index: 10;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  pointer-events: none;
+  box-shadow: 0 0 30px rgba(143, 0, 255, 0.5);
+}
+
+/* Show PLAY icon when video is paused AND hover */
+.video-container.video-paused:hover::before {
+  content: "▶";
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* Show PAUSE icon when video is playing AND hover */
+.video-container.video-playing:hover::before {
+  content: "⏸";
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* ============ MUTE BUTTON ============ */
+.mute-btn {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  z-index: 20;
+  background: rgba(143, 0, 255, 0.9);
+  border: none;
+  padding: 12px 14px;
+  border-radius: 50%;
+  font-size: 16px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  transform: scale(0.9);
+  opacity: 0.8;
+}
+
+.mute-btn:hover {
+  background: rgba(143, 0, 255, 1);
+  transform: scale(1.1);
+  opacity: 1;
+  box-shadow: 0 0 20px rgba(143, 0, 255, 0.7);
+}
+
+.video-container:hover .mute-btn {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* ============ CARD TEXT ============ */
+.card p {
+  text-align: center;
+  margin-top: 20px;
+  font-weight: 600;
+  color: #ddd;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+}
+
+.card:hover p {
+  color: #fff;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* ============ VIDEO BREAKDOWN SECTION ============ */
+.video-breakdown {
+  padding: 80px 20px;
+  background: linear-gradient(135deg, #0f0521, #1a0935);
+  color: white;
+}
+
+.video-breakdown h2 {
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: 60px;
+  background: linear-gradient(90deg, #8f00ff, #d46aff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.breakdown-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+}
+
+.breakdown-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 50px;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 30px;
+  padding: 40px;
+  border: 1px solid rgba(143, 0, 255, 0.2);
+  transition: all 0.4s ease;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.breakdown-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.breakdown-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(143, 0, 255, 0.4);
+  box-shadow: 0 20px 60px rgba(143, 0, 255, 0.2);
+  transform: translateY(-5px);
+}
+
+.breakdown-card.reverse {
+  direction: rtl;
+}
+
+.breakdown-card.reverse .breakdown-text {
+  direction: ltr;
+  text-align: left;
+}
+
+/* Breakdown Video */
+.breakdown-video {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  aspect-ratio: 16/9;
+  max-height: 500px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+}
+
+.breakdown-video::before {
+  content: "▶";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  background: rgba(143, 0, 255, 0.85);
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: white;
+  z-index: 10;
+  opacity: 0;
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.breakdown-video.video-paused:hover::before {
+  content: "▶";
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.breakdown-video.video-playing:hover::before {
+  content: "⏸";
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.breakdown-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.breakdown-card:hover .breakdown-video video {
+  transform: scale(1.03);
+}
+
+.breakdown-mute-btn {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid #8f00ff;
+  color: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+
+.breakdown-mute-btn:hover {
+  background: #8f00ff;
+  transform: scale(1.1);
+}
+
+/* Breakdown Text */
+.breakdown-text {
+  padding: 20px;
+}
+
+.breakdown-text h3 {
+  font-size: 2.2rem;
+  color: #d46aff;
+  margin-bottom: 20px;
+}
+
+.breakdown-text p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 25px;
+  color: #ccc;
+}
+
+.tech-list {
+  list-style: none;
+  margin-bottom: 30px;
+}
+
+.tech-list li {
+  margin-bottom: 10px;
+  font-size: 1rem;
+  color: #aaa;
+}
+
+.tech-list i {
+  color: #8f00ff;
+  margin-right: 10px;
+}
+
+.breakdown-stats {
+  display: flex;
+  gap: 25px;
+  flex-wrap: wrap;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.breakdown-stats span {
+  background: rgba(143, 0, 255, 0.1);
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.breakdown-stats i {
+  color: #d46aff;
+}
+
+/* ================= CONTACT SECTION ================= */
+.contact-section {
+  padding: 80px 20px;
+  background: linear-gradient(135deg, #1a0a3a, #2e0057);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.contact-section h2 {
+  font-size: 3rem;
+  margin-bottom: 40px;
+  background: linear-gradient(90deg, #8f00ff, #d46aff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.contact-form {
+  max-width: 600px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 40px;
+  border-radius: 20px;
+  border: 1px solid rgba(143, 0, 255, 0.2);
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  font-size: 1rem;
+  transition: border 0.3s ease;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  outline: none;
+  border-color: #8f00ff;
+}
+
+.contact-form textarea {
+  resize: vertical;
+  min-height: 150px;
+}
+
+.btn {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(90deg, #8f00ff, #d46aff);
+  border: none;
+  color: white;
+  font-weight: 700;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(143, 0, 255, 0.3);
+}
+
+/* ================= RESPONSIVE DESIGN ================= */
+@media (max-width: 1024px) {
+  .breakdown-card {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    text-align: center;
+  }
+  
+  .breakdown-card.reverse {
+    direction: ltr;
+  }
+  
+  .breakdown-video {
+    max-height: 400px;
+    max-width: 280px;
+    margin: 0 auto;
+  }
+  
+  .breakdown-stats {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .tilt-inner {
+    padding: 30px 20px;
+    text-align: center;
+    flex-direction: column;
+  }
+
+  .hero-text h1 {
+    font-size: 2.5rem;
+  }
+
+  .showcase-section h2,
+  .video-breakdown h2,
+  .contact-section h2 {
+    font-size: 2.2rem;
+  }
+
+  .card {
+    flex: 0 0 280px;
+  }
+
+  .breakdown-card {
+    padding: 30px 20px;
+  }
+
+  .breakdown-text h3 {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding: 15px;
+  }
+
+  .hero-image {
+    max-width: 220px;
+  }
+
+  .hero-text h1 {
+    font-size: 1.8rem;
+  }
+
+  .liquid-btn {
+    padding: 12px 26px;
+    font-size: 0.9rem;
+  }
+
+  .software-logos img {
+    height: 40px;
+  }
+
+  .showcase-section {
+    padding: 40px 12px;
+  }
+
+  .showcase-section h2 {
+    font-size: 1.6rem;
+  }
+
+  .horizontal-scroll {
+    gap: 16px;
+  }
+
+  .card {
+    flex: 0 0 220px;
+    padding: 15px;
+  }
+
+  .video-breakdown {
+    padding: 50px 15px;
+  }
+
+  .breakdown-card {
+    padding: 20px 15px;
+    gap: 30px;
+  }
+
+  .breakdown-video {
+    max-width: 220px;
+  }
+
+  .breakdown-stats {
+    gap: 15px;
+  }
+
+  .breakdown-stats span {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+
+  .contact-form {
+    padding: 20px;
+  }
+}
