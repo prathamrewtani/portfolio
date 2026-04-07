@@ -960,38 +960,69 @@ video:-webkit-full-screen + .center-play {
   }
 }
 
-/* ================= MOBILE RESPONSIVE ================= */
+/* ================= MOBILE MASTER FIX ================= */
 @media (max-width: 768px) {
 
+  body {
+    overflow-x: hidden;
+  }
+
+  /* HERO FIX */
   .tilt-inner {
     flex-direction: column;
+    align-items: center;
     text-align: center;
   }
 
   .hero-image img {
-    width: 180px;
+    width: 160px;
+    margin-bottom: 15px;
+  }
+
+  .hero-text {
+    padding: 0 10px;
   }
 
   .hero-text h1 {
-    font-size: 28px;
+    font-size: 26px;
   }
 
+  /* BUTTONS STACK */
   .hero-buttons {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
+    width: 100%;
   }
 
+  .liquid-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* SCROLL FIX */
   .scroll-wrapper {
-    gap: 15px;
+    display: flex;
+    overflow-x: auto;
+    gap: 12px;
     padding: 10px;
+    scroll-snap-type: x mandatory;
   }
 
   .card {
-    min-width: 70%;
+    min-width: 75%;
+    flex: 0 0 auto;
   }
 
+  /* VIDEO FIX */
   .video-container {
+    width: 100%;
     aspect-ratio: 9/16;
+  }
+
+  video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 }
