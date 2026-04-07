@@ -1010,9 +1010,10 @@ video:-webkit-full-screen + .center-play {
   }
 
   .card {
-    min-width: 75%;
-    flex: 0 0 auto;
-  }
+  min-width: 60%;
+  max-width: 280px;
+  flex: 0 0 auto;
+}
 
   /* VIDEO FIX */
   .video-container {
