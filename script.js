@@ -1,12 +1,161 @@
-// ========= TILT EFFECT =========
+// ================= GLOBAL VIDEO TRACK =================
+let activeVideo = null;
+
+function updateInactiveVideos(active) {
+  document.querySelectorAll(".video-container").forEach(container => {
+    const vid = container.querySelector("video");
+
+    if (!active || vid === active) {
+      container.classList.remove("inactive");
+    } else {
+      container.classList.add("inactive");
+    }
+  });
+}
+
+// ================= DOM READY =================
+document.addEventListener("DOMContentLoaded", () => {
+
+  // ========= CONTACT FORM =========
+  const form = document.querySelector(".contact-form");
+  if (form) {
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      sendMail();
+    });
+  }
+
+  // ========= VIDEO CONTROL (SCROLL SECTION) =========
+  document.querySelectorAll(".video-container").forEach(container => {
+    const video = container.querySelector("video");
+    const btn = container.querySelector(".mute-btn");
+
+    if (!video) return;
+
+    // Default state
+    video.pause();
+    video.currentTime = 0;
+    container.classList.add("video-paused");
+
+    // ✅ FIXED CLICK LOGIC (no nesting)
+    container.addEventListener("click", () => {
+
+      // Pause previous video
+      if (activeVideo && activeVideo !== video) {
+        activeVideo.pause();
+        activeVideo.muted = true;
+
+        const oldContainer = activeVideo.closest(".video-container");
+        oldContainer.classList.remove("video-playing");
+        oldContainer.classList.add("video-paused");
+
+        const oldBtn = oldContainer.querySelector(".mute-btn");
+        if (oldBtn) oldBtn.textContent = "🔇";
+      }
+
+      // Toggle play/pause
+      if (video.paused) {
+        video.play().catch(() => {});
+        activeVideo = video;
+        updateInactiveVideos(video);
+      } else {
+        video.pause();
+        activeVideo = null;
+      }
+    });
+
+    // ========= MUTE BUTTON =========
+    btn?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      video.muted = !video.muted;
+      btn.textContent = video.muted ? "🔇" : "🔊";
+    });
+
+    // ========= SYNC STATES =========
+    video.addEventListener("play", () => {
+      container.classList.add("video-playing");
+      container.classList.remove("video-paused");
+    });
+
+    video.addEventListener("pause", () => {
+      container.classList.add("video-paused");
+      container.classList.remove("video-playing");
+    });
+
+    video.addEventListener("ended", () => {
+      video.currentTime = 0;
+      container.classList.add("video-paused");
+      container.classList.remove("video-playing");
+    });
+  });
+
+  // ========= BREAKDOWN VIDEOS =========
+  document.querySelectorAll(".breakdown-video").forEach(container => {
+    const video = container.querySelector("video");
+    const btn = container.querySelector(".breakdown-mute-btn");
+
+    if (!video) return;
+
+    video.pause();
+    container.classList.add("video-paused");
+
+    container.addEventListener("click", (e) => {
+      if (e.target === btn) return;
+
+      if (video.paused) {
+        video.play().catch(() => {});
+        container.classList.add("video-playing");
+        container.classList.remove("video-paused");
+      } else {
+        video.pause();
+        container.classList.add("video-paused");
+        container.classList.remove("video-playing");
+      }
+    });
+
+    btn?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      video.muted = !video.muted;
+      btn.textContent = video.muted ? "🔇" : "🔊";
+    });
+  });
+
+});
+
+// ================= SCROLL AUTO-PAUSE =================
+let scrollTimeout;
+
+window.addEventListener("scroll", () => {
+  clearTimeout(scrollTimeout);
+
+  scrollTimeout = setTimeout(() => {
+
+    document.querySelectorAll("video").forEach(video => {
+      video.pause();
+
+      const container = video.closest(".video-container, .breakdown-video");
+
+      if (container) {
+        container.classList.remove("video-playing");
+        container.classList.add("video-paused");
+      }
+
+      const btn = container?.querySelector(".mute-btn, .breakdown-mute-btn");
+      if (btn) btn.textContent = "🔇";
+    });
+
+    activeVideo = null;
+
+  }, 150);
+});
+
+// ================= TILT EFFECT =================
 const tiltContainer = document.querySelector(".tilt-container");
 const tiltInner = document.querySelector(".tilt-inner");
 
-if (tiltContainer) {
-  let mouseX = 0,
-    mouseY = 0;
-  let currentX = 0,
-    currentY = 0;
+if (tiltContainer && tiltInner) {
+  let mouseX = 0, mouseY = 0;
+  let currentX = 0, currentY = 0;
   let rafId;
 
   tiltContainer.addEventListener("mousemove", (e) => {
@@ -14,18 +163,13 @@ if (tiltContainer) {
     mouseX = (e.clientX - rect.left) / rect.width - 0.5;
     mouseY = (e.clientY - rect.top) / rect.height - 0.5;
 
-    if (!rafId) {
-      rafId = requestAnimationFrame(updateTilt);
-    }
+    if (!rafId) rafId = requestAnimationFrame(updateTilt);
   });
 
   tiltContainer.addEventListener("mouseleave", () => {
     mouseX = 0;
     mouseY = 0;
-
-    if (!rafId) {
-      rafId = requestAnimationFrame(updateTilt);
-    }
+    if (!rafId) rafId = requestAnimationFrame(updateTilt);
   });
 
   function updateTilt() {
@@ -33,9 +177,11 @@ if (tiltContainer) {
     currentX += (mouseX - currentX) * ease;
     currentY += (mouseY - currentY) * ease;
 
-    tiltInner.style.transform = `perspective(1000px) rotateX(${
-      currentY * -10
-    }deg) rotateY(${currentX * 10}deg)`;
+    tiltInner.style.transform = `
+      perspective(1000px)
+      rotateX(${currentY * -10}deg)
+      rotateY(${currentX * 10}deg)
+    `;
 
     if (
       Math.abs(currentX - mouseX) > 0.001 ||
@@ -48,182 +194,16 @@ if (tiltContainer) {
   }
 }
 
-// ========= VIDEO CONTROLS FOR HORIZONTAL SCROLL =========
-document.addEventListener("DOMContentLoaded", () => {
-  // Handle horizontal scroll videos
-  const horizontalCards = document.querySelectorAll(".showcase-section .card");
-
-  horizontalCards.forEach((card) => {
-    const video = card.querySelector("video");
-    const muteBtn = card.querySelector(".mute-btn");
-    const videoContainer = card.querySelector(".video-container");
-
-    if (!video) return;
-
-    // Initialize video as paused
-    video.pause();
-    video.currentTime = 0;
-    videoContainer.classList.add("video-paused");
-    videoContainer.classList.remove("video-playing");
-
-    // Click to play/pause
-    videoContainer.addEventListener("click", (e) => {
-      if (e.target === muteBtn) return; // Don't interfere with mute button
-
-      if (video.paused) {
-        video
-          .play()
-          .then(() => {
-            videoContainer.classList.remove("video-paused");
-            videoContainer.classList.add("video-playing");
-          })
-          .catch((err) => {
-            console.log("Play failed:", err);
-            // Fallback: mute and try
-            video.muted = true;
-            video
-              .play()
-              .then(() => {
-                videoContainer.classList.remove("video-paused");
-                videoContainer.classList.add("video-playing");
-              })
-              .catch(console.error);
-          });
-      } else {
-        video.pause();
-        videoContainer.classList.remove("video-playing");
-        videoContainer.classList.add("video-paused");
-      }
-    });
-
-    // Mute/Unmute button
-    if (muteBtn) {
-      muteBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        video.muted = !video.muted;
-        muteBtn.textContent = video.muted ? "🔇" : "🔊";
-      });
-
-      // Set initial state
-      muteBtn.textContent = video.muted ? "🔇" : "🔊";
-    }
-
-    // Update play/pause classes on video events
-    video.addEventListener("play", () => {
-      videoContainer.classList.remove("video-paused");
-      videoContainer.classList.add("video-playing");
-    });
-
-    video.addEventListener("pause", () => {
-      videoContainer.classList.remove("video-playing");
-      videoContainer.classList.add("video-paused");
-    });
-
-    video.addEventListener("ended", () => {
-      video.currentTime = 0;
-      videoContainer.classList.remove("video-playing");
-      videoContainer.classList.add("video-paused");
-    });
-  });
-
-  // Handle breakdown section videos
-  const breakdownCards = document.querySelectorAll(".breakdown-card");
-
-  breakdownCards.forEach((card) => {
-    const video = card.querySelector("video");
-    const muteBtn = card.querySelector(".breakdown-mute-btn");
-    const videoContainer = card.querySelector(".breakdown-video");
-
-    if (!video) return;
-
-    // Initialize video as paused
-    video.pause();
-    video.currentTime = 0;
-    videoContainer.classList.add("video-paused");
-    videoContainer.classList.remove("video-playing");
-
-    // Click to play/pause
-    videoContainer.addEventListener("click", (e) => {
-      if (e.target === muteBtn) return;
-
-      if (video.paused) {
-        video
-          .play()
-          .then(() => {
-            videoContainer.classList.remove("video-paused");
-            videoContainer.classList.add("video-playing");
-          })
-          .catch((err) => {
-            console.log("Play failed:", err);
-            video.muted = true;
-            video
-              .play()
-              .then(() => {
-                videoContainer.classList.remove("video-paused");
-                videoContainer.classList.add("video-playing");
-              })
-              .catch(console.error);
-          });
-      } else {
-        video.pause();
-        videoContainer.classList.remove("video-playing");
-        videoContainer.classList.add("video-paused");
-      }
-    });
-
-    // Mute/Unmute button
-    if (muteBtn) {
-      muteBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        video.muted = !video.muted;
-        muteBtn.textContent = video.muted ? "🔇" : "🔊";
-      });
-
-      muteBtn.textContent = video.muted ? "🔇" : "🔊";
-    }
-
-    // Update play/pause classes
-    video.addEventListener("play", () => {
-      videoContainer.classList.remove("video-paused");
-      videoContainer.classList.add("video-playing");
-    });
-
-    video.addEventListener("pause", () => {
-      videoContainer.classList.remove("video-playing");
-      videoContainer.classList.add("video-paused");
-    });
-
-    video.addEventListener("ended", () => {
-      video.currentTime = 0;
-      videoContainer.classList.remove("video-playing");
-      videoContainer.classList.add("video-paused");
-    });
-  });
-});
-
-// ========= HORIZONTAL SCROLL WITH MOMENTUM =========
+// ================= HORIZONTAL DRAG SCROLL =================
 const horizontalScroll = document.querySelector(".horizontal-scroll");
+
 if (horizontalScroll) {
   let isDown = false;
   let startX;
   let scrollLeft;
 
-  const events = {
-    mouse: {
-      down: "mousedown",
-      move: "mousemove",
-      up: ["mouseup", "mouseleave"],
-    },
-    touch: {
-      down: "touchstart",
-      move: "touchmove",
-      up: ["touchend", "touchcancel"],
-    },
-  };
-
   function startDrag(e) {
     isDown = true;
-    horizontalScroll.classList.add("dragging");
     startX = (e.pageX || e.touches[0].pageX) - horizontalScroll.offsetLeft;
     scrollLeft = horizontalScroll.scrollLeft;
   }
@@ -238,71 +218,19 @@ if (horizontalScroll) {
 
   function endDrag() {
     isDown = false;
-    horizontalScroll.classList.remove("dragging");
   }
 
-  // Mouse events
-  horizontalScroll.addEventListener(events.mouse.down, startDrag);
-  horizontalScroll.addEventListener(events.mouse.move, drag);
-  events.mouse.up.forEach((evt) => {
-    horizontalScroll.addEventListener(evt, endDrag);
-  });
+  horizontalScroll.addEventListener("mousedown", startDrag);
+  horizontalScroll.addEventListener("mousemove", drag);
+  horizontalScroll.addEventListener("mouseup", endDrag);
+  horizontalScroll.addEventListener("mouseleave", endDrag);
 
-  // Touch events
-  horizontalScroll.addEventListener(events.touch.down, startDrag);
-  horizontalScroll.addEventListener(events.touch.move, drag);
-  events.touch.up.forEach((evt) => {
-    horizontalScroll.addEventListener(evt, endDrag);
-  });
+  horizontalScroll.addEventListener("touchstart", startDrag);
+  horizontalScroll.addEventListener("touchmove", drag);
+  horizontalScroll.addEventListener("touchend", endDrag);
 }
 
-// ========= BREAKDOWN SECTION SCROLL ANIMATIONS =========
-const breakdownCards = document.querySelectorAll(".breakdown-card");
-const breakdownObserver = new IntersectionObserver(
-  (entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("visible");
-      }
-    });
-  },
-  {
-    threshold: 0.2,
-    rootMargin: "0px 0px -100px 0px",
-  }
-);
-
-breakdownCards.forEach((card) => {
-  breakdownObserver.observe(card);
-});
-
-// ========= PAUSE ALL VIDEOS ON SCROLL =========
-window.addEventListener("scroll", () => {
-  // Pause horizontal scroll videos
-  document.querySelectorAll(".showcase-section video").forEach((video) => {
-    if (!video.paused) {
-      video.pause();
-      const container = video.closest(".video-container");
-      if (container) {
-        container.classList.remove("video-playing");
-        container.classList.add("video-paused");
-      }
-    }
-  });
-
-  // Pause breakdown videos
-  document.querySelectorAll(".breakdown-video video").forEach((video) => {
-    if (!video.paused) {
-      video.pause();
-      const container = video.closest(".breakdown-video");
-      if (container) {
-        container.classList.remove("video-playing");
-        container.classList.add("video-paused");
-      }
-    }
-  });
-});
-
+// ================= EMAIL =================
 function sendMail() {
   let params = {
     name: document.getElementById("name").value,
@@ -313,11 +241,6 @@ function sendMail() {
 
   emailjs
     .send("service_76bjicp", "template_pklxfm9", params)
-    .then(() => {
-      alert("Email sent successfully!");
-    })
-    .catch((error) => {
-      console.error("FAILED...", error);
-      alert("Email failed");
-    });
+    .then(() => alert("Email sent successfully!"))
+    .catch(() => alert("Email failed"));
 }
