@@ -1006,7 +1006,9 @@ video:-webkit-full-screen + .center-play {
     overflow-x: auto;
     gap: 12px;
     padding: 10px;
-    scroll-snap-type: x mandatory;
+    scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+}
   }
 
   .card {
