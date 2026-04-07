@@ -9,7 +9,7 @@ section {
   transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
-html, body {
+body {
   width: 100%;
   overflow-x: hidden;
   scroll-behavior: smooth;
@@ -73,6 +73,10 @@ html, body {
 
 .hero-text h1 span {
   color: #8f00ff;
+}
+
+.highlight {
+  color: #ffffff;
 }
 
 .hero-text .glow {
@@ -232,7 +236,8 @@ html, body {
   transition: transform 0.6s ease;
 }
 
-  /* ============ PLAY/PAUSE OVERLAY FIXED ============ */
+ /* ============ PLAY/PAUSE OVERLAY CLEAN ============ */
+
 .video-container::before {
   content: "▶";
   position: absolute;
@@ -260,63 +265,18 @@ html, body {
   transition: all 0.3s ease;
 }
 
-/* SHOW WHEN PAUSED */
+/* ▶ SHOW WHEN PAUSED */
 .video-container.video-paused::before {
   content: "▶";
   opacity: 1;
 }
 
-/* SHOW WHEN PLAYING */
+/* ⏸ HIDE WHEN PLAYING */
 .video-container.video-playing::before {
-  content: "⏸";
-  opacity: 1;
-}
-
-/* HOVER BOOST */
-.video-container:hover::before {
-  opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
-}
-
-  width: 70px;
-  height: 70px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background: rgba(143, 0, 255, 0.85);
-  border-radius: 50%;
-
-  font-size: 28px;
-  color: white;
-
-  z-index: 20;
   opacity: 0;
-  pointer-events: none;
-
-  transition: all 0.3s ease;
 }
 
-/* SHOW PLAY ICON */
-.video-container.video-paused::before {
-  content: "▶";
-  opacity: 1;
-}
-
-/* SHOW PAUSE ICON */
-.video-container.video-playing::before {
-  content: "⏸";
-  opacity: 1;
-}
-/* Show PLAY icon when video is paused AND hover */
-.video-container.video-paused:hover::before {
-  content: "▶";
-  opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
-}
-
-/* Show PAUSE icon when video is playing AND hover */
+/* ⏸ SHOW ONLY ON HOVER WHEN PLAYING */
 .video-container.video-playing:hover::before {
   content: "⏸";
   opacity: 1;
@@ -403,8 +363,8 @@ html, body {
   padding: 40px;
   border: 1px solid rgba(143, 0, 255, 0.2);
   transition: all 0.4s ease;
-  opacity: 0;
-  transform: translateY(30px);
+  opacity: 1;
+  transform: translateY(0px);
 }
 
 .breakdown-card.visible {
@@ -503,6 +463,28 @@ html, body {
   background: #8f00ff;
   transform: scale(1.1);
 }
+
+.fullscreen-btn {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background: rgba(0,0,0,0.7);
+  border: 2px solid #8f00ff;
+  color: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+
+.fullscreen-btn:hover {
+  background: #8f00ff;
+  transform: scale(1.1);
+}
+
 
 /* Breakdown Text */
 .breakdown-text {
@@ -759,11 +741,16 @@ html, body {
 .scroll-wrapper {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: calc(100% / 4 - 22.5px); /* 🔥 4 cards */
+  grid-auto-columns: calc((100% - 90px) / 4);
   gap: 30px;
   overflow-x: auto;
-  padding: 20px;
+  padding: 30px 0 30px 30px;
   scroll-snap-type: x mandatory;
+}
+
+.scroll-wrapper::after {
+  content: "";
+  width: 30px;
 }
 
 /* Scrollbar */
@@ -835,5 +822,120 @@ html, body {
 /* Darken non-active videos */
 .video-container.inactive::after {
   background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(2px);
 }
 
+/* Default: hide icon for inactive videos */
+.video-container.inactive::before {
+  opacity: 0;
+}
+
+/* 🔥 SHOW play icon when hovering inactive videos */
+.video-container.inactive:hover::before {
+  content: "▶";
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.scroll-wrapper .card {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* 🎬 CENTER PLAY BUTTON */
+.center-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+
+  width: 90px;
+  height: 90px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+
+  font-size: 36px;
+  color: white;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+/* SHOW ON HOVER */
+.breakdown-video:hover .center-play {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* 🎬 FULLSCREEN MODE UI */
+video:fullscreen + .center-play,
+video:-webkit-full-screen + .center-play {
+  opacity: 0;
+}
+
+/* 🎬 FADE UI CONTAINER */
+.breakdown-video {
+  position: relative;
+}
+
+.breakdown-video::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,0.6),
+    transparent 40%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.breakdown-video:hover::after {
+  opacity: 1;
+}
+
+/* ================= FULLSCREEN CONTROL ================= */
+
+/* ✅ SHOW center button ONLY in fullscreen */
+.breakdown-video.fullscreen .center-play {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ❌ HIDE old play icon in fullscreen */
+.breakdown-video.fullscreen::before {
+  display: none !important;
+}
+
+
+
+@media (max-width: 768px) {
+
+  .center-play {
+    width: 70px;
+    height: 70px;
+    font-size: 28px;
+    opacity: 1; /* 🔥 ALWAYS visible on mobile */
+  }
+
+  /* Disable hover dependency */
+  .breakdown-video:hover .center-play {
+    opacity: 1;
+  }
+
+  /* Bigger tap targets */
+  .breakdown-mute-btn,
+  .fullscreen-btn {
+    width: 50px;
+    height: 50px;
+    font-size: 18px;
+  }
+}

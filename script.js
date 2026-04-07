@@ -1,3 +1,20 @@
+function fadeVolume(video, target = 1, duration = 300) {
+  const start = video.volume;
+  const change = target - start;
+  const startTime = performance.now();
+
+  function animate(time) {
+    const progress = Math.min((time - startTime) / duration, 1);
+    video.volume = start + change * progress;
+
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    }
+  }
+
+  requestAnimationFrame(animate);
+}
+
 // ================= GLOBAL VIDEO TRACK =================
 let activeVideo = null;
 
@@ -32,67 +49,88 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!video) return;
 
-    // Default state
     video.pause();
     video.currentTime = 0;
     container.classList.add("video-paused");
 
-    // ✅ FIXED CLICK LOGIC (no nesting)
     container.addEventListener("click", () => {
 
-      // Pause previous video
-      if (activeVideo && activeVideo !== video) {
-        activeVideo.pause();
-        activeVideo.muted = true;
+      document.querySelectorAll(".video-container video").forEach(v => {
+        if (v !== video) {
+          v.pause();
+          v.muted = true;
 
-        const oldContainer = activeVideo.closest(".video-container");
-        oldContainer.classList.remove("video-playing");
-        oldContainer.classList.add("video-paused");
+          const c = v.closest(".video-container");
+          c.classList.remove("video-playing");
+          c.classList.add("video-paused");
 
-        const oldBtn = oldContainer.querySelector(".mute-btn");
-        if (oldBtn) oldBtn.textContent = "🔇";
-      }
+          const muteBtn = c.querySelector(".mute-btn");
+          if (muteBtn) muteBtn.textContent = "🔇";
+        }
+      });
 
-      // Toggle play/pause
       if (video.paused) {
+        video.muted = false;
+        video.volume = 0;
         video.play().catch(() => {});
+
+        fadeVolume(video, 1, 400);
+
+        if (btn) btn.textContent = "🔊";
+
         activeVideo = video;
         updateInactiveVideos(video);
+
       } else {
         video.pause();
+
+        if (btn) btn.textContent = "🔇";
+
         activeVideo = null;
+        updateInactiveVideos(null);
       }
     });
 
-    // ========= MUTE BUTTON =========
     btn?.addEventListener("click", (e) => {
-      e.stopPropagation();
-      video.muted = !video.muted;
-      btn.textContent = video.muted ? "🔇" : "🔊";
-    });
+  e.stopPropagation();
+  video.muted = !video.muted;
+  btn.textContent = video.muted ? "🔇" : "🔊";
+});
 
-    // ========= SYNC STATES =========
-    video.addEventListener("play", () => {
-      container.classList.add("video-playing");
-      container.classList.remove("video-paused");
-    });
+// ✅ PLAY STATE
+video.addEventListener("play", () => {
+  container.classList.add("video-playing");
+  container.classList.remove("video-paused");
+});
 
-    video.addEventListener("pause", () => {
-      container.classList.add("video-paused");
-      container.classList.remove("video-playing");
-    });
+// ✅ PAUSE STATE
+video.addEventListener("pause", () => {
+  container.classList.add("video-paused");
+  container.classList.remove("video-playing");
+});
 
-    video.addEventListener("ended", () => {
-      video.currentTime = 0;
-      container.classList.add("video-paused");
-      container.classList.remove("video-playing");
-    });
+// ✅ END STATE
+video.addEventListener("ended", () => {
+  video.currentTime = 0;
+  container.classList.add("video-paused");
+  container.classList.remove("video-playing");
+});
+
+// 🔥 LOADING STATE (PUT HERE ONLY ONCE)
+video.addEventListener("waiting", () => {
+  container.classList.add("loading");
+});
+
+video.addEventListener("playing", () => {
+  container.classList.remove("loading");
+});
   });
 
-  // ========= BREAKDOWN VIDEOS =========
+  // ========= BREAKDOWN VIDEOS (FIXED CLEAN VERSION) =========
   document.querySelectorAll(".breakdown-video").forEach(container => {
     const video = container.querySelector("video");
     const btn = container.querySelector(".breakdown-mute-btn");
+    const fsBtn = container.querySelector(".fullscreen-btn");
 
     if (!video) return;
 
@@ -100,12 +138,26 @@ document.addEventListener("DOMContentLoaded", () => {
     container.classList.add("video-paused");
 
     container.addEventListener("click", (e) => {
-      if (e.target === btn) return;
+      if (e.target === btn || e.target === fsBtn) return;
+
+      document.querySelectorAll(".breakdown-video video").forEach(v => {
+        if (v !== video) {
+          v.pause();
+          const c = v.closest(".breakdown-video");
+          c.classList.remove("video-playing");
+          c.classList.add("video-paused");
+
+          const b = c.querySelector(".breakdown-mute-btn");
+          if (b) b.textContent = "🔇";
+        }
+      });
 
       if (video.paused) {
+        video.muted = false;
         video.play().catch(() => {});
         container.classList.add("video-playing");
         container.classList.remove("video-paused");
+        if (btn) btn.textContent = "🔊";
       } else {
         video.pause();
         container.classList.add("video-paused");
@@ -118,35 +170,64 @@ document.addEventListener("DOMContentLoaded", () => {
       video.muted = !video.muted;
       btn.textContent = video.muted ? "🔇" : "🔊";
     });
+
+    fsBtn?.addEventListener("click", (e) => {
+      e.stopPropagation();
+
+      video.controls = true;
+
+      if (video.requestFullscreen) {
+        video.requestFullscreen();
+      } else if (video.webkitRequestFullscreen) {
+        video.webkitRequestFullscreen();
+      } else if (video.msRequestFullscreen) {
+        video.msRequestFullscreen();
+      }
+
+      video.muted = false;
+      video.play().catch(() => {});
+    });
   });
 
 });
 
+// ================= FULLSCREEN CONTROL =================
+document.addEventListener("fullscreenchange", () => {
+  document.querySelectorAll(".breakdown-video").forEach(container => {
+    const video = container.querySelector("video");
+
+    if (document.fullscreenElement === video) {
+      // ✅ Enter fullscreen
+      container.classList.add("fullscreen");
+      video.controls = true;
+    } else {
+      // ❌ Exit fullscreen
+      container.classList.remove("fullscreen");
+      video.controls = false;
+    }
+  });
+});
+
 // ================= SCROLL AUTO-PAUSE =================
-let scrollTimeout;
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    const video = entry.target;
 
-window.addEventListener("scroll", () => {
-  clearTimeout(scrollTimeout);
-
-  scrollTimeout = setTimeout(() => {
-
-    document.querySelectorAll("video").forEach(video => {
+    if (!entry.isIntersecting) {
       video.pause();
 
       const container = video.closest(".video-container, .breakdown-video");
-
-      if (container) {
-        container.classList.remove("video-playing");
-        container.classList.add("video-paused");
-      }
+      container?.classList.remove("video-playing");
+      container?.classList.add("video-paused");
 
       const btn = container?.querySelector(".mute-btn, .breakdown-mute-btn");
       if (btn) btn.textContent = "🔇";
-    });
+    }
+  });
+}, { threshold: 0.3 });
 
-    activeVideo = null;
-
-  }, 150);
+document.querySelectorAll("video").forEach(video => {
+  observer.observe(video);
 });
 
 // ================= TILT EFFECT =================
@@ -194,42 +275,6 @@ if (tiltContainer && tiltInner) {
   }
 }
 
-// ================= HORIZONTAL DRAG SCROLL =================
-const horizontalScroll = document.querySelector(".horizontal-scroll");
-
-if (horizontalScroll) {
-  let isDown = false;
-  let startX;
-  let scrollLeft;
-
-  function startDrag(e) {
-    isDown = true;
-    startX = (e.pageX || e.touches[0].pageX) - horizontalScroll.offsetLeft;
-    scrollLeft = horizontalScroll.scrollLeft;
-  }
-
-  function drag(e) {
-    if (!isDown) return;
-    e.preventDefault();
-    const x = (e.pageX || e.touches[0].pageX) - horizontalScroll.offsetLeft;
-    const walk = (x - startX) * 2;
-    horizontalScroll.scrollLeft = scrollLeft - walk;
-  }
-
-  function endDrag() {
-    isDown = false;
-  }
-
-  horizontalScroll.addEventListener("mousedown", startDrag);
-  horizontalScroll.addEventListener("mousemove", drag);
-  horizontalScroll.addEventListener("mouseup", endDrag);
-  horizontalScroll.addEventListener("mouseleave", endDrag);
-
-  horizontalScroll.addEventListener("touchstart", startDrag);
-  horizontalScroll.addEventListener("touchmove", drag);
-  horizontalScroll.addEventListener("touchend", endDrag);
-}
-
 // ================= EMAIL =================
 function sendMail() {
   let params = {
@@ -244,3 +289,4 @@ function sendMail() {
     .then(() => alert("Email sent successfully!"))
     .catch(() => alert("Email failed"));
 }
+
