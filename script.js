@@ -32,6 +32,21 @@ function updateInactiveVideos(active) {
 
 // ================= DOM READY =================
 document.addEventListener("DOMContentLoaded", () => {
+  // ========= HERO SCROLL BUTTON =========
+const watchBtn = document.getElementById("watchBtn");
+
+if (watchBtn) {
+  watchBtn.addEventListener("click", function(e) {
+    e.preventDefault();
+
+    const section = document.getElementById("showcase");
+
+    section.scrollIntoView({
+      behavior: "smooth",
+      block: "center" // 🔥 centers the section
+    });
+  });
+}
 
   // ========= CONTACT FORM =========
   const form = document.querySelector(".contact-form");
@@ -185,7 +200,10 @@ video.addEventListener("playing", () => {
       }
 
       video.muted = false;
+      video.volume = 0;
       video.play().catch(() => {});
+
+      fadeVolume(video, 1, 400);
     });
   });
 
@@ -288,5 +306,9 @@ function sendMail() {
     .send("service_76bjicp", "template_pklxfm9", params)
     .then(() => alert("Email sent successfully!"))
     .catch(() => alert("Email failed"));
+    if (!params.name || !params.email) {
+  alert("Please fill all fields");
+  return;
+}
 }
 

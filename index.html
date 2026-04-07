@@ -1,66 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>pratham's Portfolio</title>
-    <link rel="stylesheet" href="style.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pratham's Portfolio</title>
 
-    <script type="text/javascript"
-        src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
-</script>
-<script type="text/javascript">
-   (function(){
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- EmailJS -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>
+    (function(){
       emailjs.init({
         publicKey: "gsGBZRXj6Cw-8z2OZ",
       });
-   })();
-</script>
+    })();
+  </script>
 </head>
+
 <body>
 
-  <section class="hero">
-    <div class="hero-content tilt-container">
-      <div class="tilt-inner">
-        <div class="hero-image">
-          <img src="pr/me-0.jpg" alt="pratham" />
-        </div>
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="hero-content tilt-container">
+    <div class="tilt-inner">
 
-        <div class="hero-text">
-          <h1>Hi, I'm <span>pratham</span></h1>
-          <p>I Create <span class="highlight">High Impact</span> Edits.</p>
-          <p>Reels, transitions & storytelling that boost engagement.</p>
-          <!-- <video src="pr/me.jpg" height="65px" width="400px" autoplay loop></video> -->
-          <a href="#showcase" class="liquid-btn">
+      <div class="hero-image">
+        <img src="pr/me-0.jpg" alt="pratham" />
+      </div>
+
+      <div class="hero-text">
+        <h1>Hi, I'm <span>pratham</span></h1>
+        <p>I Create <span class="highlight">High Impact</span> Edits.</p>
+        <p>Reels, transitions & storytelling that boost engagement.</p>
+
+        <div class="hero-buttons">
+          <a href="#showcase" class="liquid-btn" id="watchBtn">
             <span>Watch My Work</span>
           </a>
-          <a href="#HireMe" class="liquid-btn">
-            <span>contact me</span>
-          </a>
 
-          <div class="software-logos">
-            <img src="icons/after-effects.png.png" alt="After Effects" />
-            <img src="icons/premiere-pro.png.png" alt="Premiere Pro" />
-            <img src="icons/photoshot.png.png" alt="Photoshop" />
-            <img src="icons/DaVinci_Resolve_Studio.png" alt="DaVinci Resolve" />
-            <img src="icons/Canva-Logo-PNG.png" alt="Canva">
-          </div>
+          <a href="#HireMe" class="liquid-btn">
+            <span>Contact Me</span>
+          </a>
+        </div>
+
+        <div class="software-logos">
+          <img src="icons/after-effects.png.png" />
+          <img src="icons/premiere-pro.png.png" />
+          <img src="icons/photoshot.png.png" />
+          <img src="icons/DaVinci_Resolve_Studio.png" />
+          <img src="icons/Canva-Logo-PNG.png" />
         </div>
       </div>
-    </div>
-  </section>
 
+    </div>
+  </div>
+</section>
+
+<!-- ================= SHOWCASE ================= -->
 <section class="showcase-section" id="showcase">
   <h2>My Reels Showcase</h2>
 
   <div class="scroll-wrapper">
 
+    <!-- CARD -->
+    <!-- (structure unchanged, just improved attributes) -->
+
     <!-- 1 -->
     <div class="card">
       <div class="video-container">
-        <video muted loop playsinline preload="none">
+        <video muted loop playsinline preload="metadata">
           <source src="videos/evemen port.mp4" type="video/mp4" />
         </video>
         <button class="mute-btn">🔇</button>
@@ -71,7 +86,7 @@
     <!-- 2 -->
     <div class="card">
       <div class="video-container">
-        <video muted loop playsinline preload="none">
+        <video muted loop playsinline preload="metadata">
           <source src="videos/first draft_1.mp4" type="video/mp4" />
         </video>
         <button class="mute-btn">🔇</button>
@@ -82,19 +97,19 @@
     <!-- 3 -->
     <div class="card">
       <div class="video-container">
-        <video muted loop playsinline preload="none">
+        <video muted loop playsinline preload="metadata">
           <source src="videos/iphone.mp4" type="video/mp4" />
         </video>
         <button class="mute-btn">🔇</button>
       </div>
-      <p> UI Animation </p>
+      <p>UI Animation</p>
     </div>
 
     <!-- 4 -->
     <div class="card">
       <div class="video-container">
-        <video muted loop playsinline preload="none">
-          <source src="videos/captain port.mp4 " type="video/mp4" />
+        <video muted loop playsinline preload="metadata">
+          <source src="videos/captain port.mp4" type="video/mp4" />
         </video>
         <button class="mute-btn">🔇</button>
       </div>
@@ -104,47 +119,50 @@
     <!-- 5 -->
     <div class="card">
       <div class="video-container">
-        <video muted loop playsinline preload="none">
+        <video muted loop playsinline preload="metadata">
           <source src="videos/ROSE-.mp4" type="video/mp4" />
         </video>
         <button class="mute-btn">🔇</button>
       </div>
-      <p>Dynamic Speed rempaing</p>
+      <p>Dynamic Speed Remapping</p>
     </div>
 
     <!-- 6 -->
     <div class="card">
       <div class="video-container">
-        <video muted loop playsinline preload="none">
+        <video muted loop playsinline preload="metadata">
           <source src="videos/bts3_1.mp4" type="video/mp4" />
         </video>
         <button class="mute-btn">🔇</button>
       </div>
-      <p>minimal transitions(SHUBHMAN GILL)</p>
+      <p>Minimal Transitions (SHUBHMAN GILL)</p>
     </div>
 
-     <!-- 7 -->
-     <div class="card">
-  <div class="video-container">
-    <video muted loop playsinline preload="none">
-      <source src="videos/music_2.mp4" type="video/mp4" />
-    </video>
-    <button class="mute-btn">🔇</button>
-  </div>
-  <p>Hook showcase (sfx + low shutter effect)</p>
-</div>
+    <!-- 7 -->
+    <div class="card">
+      <div class="video-container">
+        <video muted loop playsinline preload="metadata">
+          <source src="videos/music_2.mp4" type="video/mp4" />
+        </video>
+        <button class="mute-btn">🔇</button>
+      </div>
+      <p>Hook showcase</p>
+    </div>
 
-  <div class="card">
-  <div class="video-container">
-    <video muted loop playsinline preload="none">
-      <source src="videos/Xtovia reel 3 v2_1.mp4" type="video/mp4" />
-    </video>
-    <button class="mute-btn">🔇</button>
-  </div>
-  <p>Clean Creative Caption</p>
-</div>
+    <!-- 8 -->
+    <div class="card">
+      <div class="video-container">
+        <video muted loop playsinline preload="metadata">
+          <source src="videos/Xtovia reel 3 v2_1.mp4" type="video/mp4" />
+        </video>
+        <button class="mute-btn">🔇</button>
+      </div>
+      <p>Clean Creative Caption</p>
+    </div>
+
   </div>
 </section>
+
 
      <section class="video-breakdown" id="showcase-explanation">
     <h2>In-depth Reels Breakdown</h2>
@@ -230,7 +248,7 @@
       <input type="text" placeholder="Your Name" id="name" required />
       <input type="email" placeholder="Email Address" id="email" required />
       <textarea placeholder="Tell me about your project..." rows="5" id="project"></textarea>
-      <button type="submit" class="btn" onclick="sendMail()">Send Message</button>
+      <button type="button" class="btn" onclick="sendMail()">Send Message</button>
     </form>
   </section>
 
