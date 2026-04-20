@@ -789,7 +789,6 @@ body {
   box-shadow: none !important;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
 }
 /* REMOVE HOVER ZOOM BUG */
 .scroll-wrapper .card:hover {
@@ -1103,9 +1102,8 @@ video:-webkit-full-screen + .center-play {
   border: 1px solid rgba(143,0,255,0.2);
   transition: all 0.4s ease;
   cursor: pointer;
-
-  opacity: 0;
-  transform: translateY(40px);
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* ICON (RED X) */
