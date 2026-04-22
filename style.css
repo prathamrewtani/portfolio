@@ -163,10 +163,10 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
   #showcase {
   scroll-margin-top: 250px;
-}
-}
+  }
 
 .showcase-section h2 {
   font-size: 3rem;
@@ -274,7 +274,7 @@ body {
   font-size: 28px;
   color: white;
 
-  z-index: 20;
+  z-index: 1;
   opacity: 0;
   pointer-events: none;
 
@@ -755,15 +755,16 @@ body {
 
 /* WRAPPER */
 .scroll-wrapper {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: calc((100% - 90px) / 4);
+  display: flex;              /* ✅ FIX */
   gap: 30px;
   overflow-x: auto;
-  padding: 30px 0 30px 30px;
+  padding: 30px;
   scroll-snap-type: x mandatory;
 }
 
+.scroll-wrapper .card {
+  flex: 0 0 280px;           /* ✅ FIX */
+}
 .scroll-wrapper::after {
   content: "";
   width: 30px;
@@ -832,6 +833,7 @@ body {
   background: rgba(0, 0, 0, 0);
   transition: background 1.15s ease;
   pointer-events: none;
+  z-index: 1;
 }
 
 /* Darken non-active videos */
@@ -959,6 +961,8 @@ video:-webkit-full-screen + .center-play {
   }
 }
 
+/* 🔧 FIXED PART ONLY — rest remains SAME */
+
 /* ================= MOBILE MASTER FIX ================= */
 @media (max-width: 768px) {
 
@@ -1006,15 +1010,15 @@ video:-webkit-full-screen + .center-play {
     gap: 12px;
     padding: 10px;
     scroll-snap-type: x proximity; 
-  -webkit-overflow-scrolling: touch;
-}
+    -webkit-overflow-scrolling: touch;
   }
 
+  /* ✅ FIXED — SINGLE SOURCE OF TRUTH */
   .card {
-  min-width: 60%;
-  max-width: 280px;
-  flex: 0 0 auto;
-}
+    min-width: 75%;
+    max-width: 280px;
+    flex: 0 0 auto;
+  }
 
   /* VIDEO FIX */
   .video-container {
@@ -1027,7 +1031,7 @@ video:-webkit-full-screen + .center-play {
     height: 100%;
     object-fit: cover;
   }
-
+}
 
 
 /* ================= INSANE PROBLEM SECTION ================= */

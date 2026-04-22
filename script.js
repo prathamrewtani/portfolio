@@ -17,6 +17,17 @@ function fadeVolume(video, target = 1, duration = 300) {
 
 const isMobile = window.innerWidth <= 768;
 
+// ✅ FIX: scroll detection flag (was missing)
+let isScrolling = false;
+
+window.addEventListener("scroll", () => {
+  isScrolling = true;
+  clearTimeout(window.scrollTimeout);
+  window.scrollTimeout = setTimeout(() => {
+    isScrolling = false;
+  }, 150);
+});
+
 // ================= GLOBAL VIDEO TRACK =================
 let activeVideo = null;
 
@@ -34,21 +45,22 @@ function updateInactiveVideos(active) {
 
 // ================= DOM READY =================
 document.addEventListener("DOMContentLoaded", () => {
+
   // ========= HERO SCROLL BUTTON =========
-const watchBtn = document.getElementById("watchBtn");
+  const watchBtn = document.getElementById("watchBtn");
 
-if (watchBtn) {
-  watchBtn.addEventListener("click", function(e) {
-    e.preventDefault();
+  if (watchBtn) {
+    watchBtn.addEventListener("click", function(e) {
+      e.preventDefault();
 
-    const section = document.getElementById("showcase");
+      const section = document.getElementById("showcase");
 
-    section.scrollIntoView({
-      behavior: "smooth",
-      block: "center" // 🔥 centers the section
+      section.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
     });
-  });
-}
+  }
 
   // ========= CONTACT FORM =========
   const form = document.querySelector(".contact-form");
@@ -60,136 +72,84 @@ if (watchBtn) {
   }
 
   // ========= VIDEO CONTROL (SCROLL SECTION) =========
-document.querySelectorAll(".video-container").forEach(container => {
-  const video = container.querySelector("video");
-  const btn = container.querySelector(".mute-btn");
+  document.querySelectorAll(".video-container").forEach(container => {
+    const video = container.querySelector("video");
+    const btn = container.querySelector(".mute-btn");
 
-  if (!video) return;
+    if (!video) return;
 
-  video.pause();
-  video.currentTime = 0;
-  container.classList.add("video-paused");
-
-  const playPauseHandler = (e) => {
-    e.preventDefault();
-
-    // stop if scrolling
-    if (isScrolling) return;
-
-    document.querySelectorAll(".video-container video").forEach(v => {
-      if (v !== video) {
-        v.pause();
-        v.muted = true;
-
-        const c = v.closest(".video-container");
-        c.classList.remove("video-playing");
-        c.classList.add("video-paused");
-
-        const muteBtn = c.querySelector(".mute-btn");
-        if (muteBtn) muteBtn.textContent = "🔇";
-      }
-    });
-
-    if (video.paused) {
-      video.muted = false;
-      video.volume = 0;
-      video.play().catch(() => {});
-      fadeVolume(video, 1, 400);
-
-      if (btn) btn.textContent = "🔊";
-
-      activeVideo = video;
-      updateInactiveVideos(video);
-
-    } else {
-      video.pause();
-
-      if (btn) btn.textContent = "🔇";
-
-      activeVideo = null;
-      updateInactiveVideos(null);
-    }
-  };
-
-  // MOBILE vs DESKTOP
-  if (isMobile) {
-    container.addEventListener("touchstart", playPauseHandler);
-  } else {
-    container.addEventListener("click", playPauseHandler);
-  }
-
-  // MUTE BUTTON
-  btn?.addEventListener("click", (e) => {
-    e.stopPropagation();
-    video.muted = !video.muted;
-    btn.textContent = video.muted ? "🔇" : "🔊";
-  });
-
-  btn?.addEventListener("touchstart", (e) => {
-    e.stopPropagation();
-  });
-
-  // PLAY STATE
-  video.addEventListener("play", () => {
-    container.classList.add("video-playing");
-    container.classList.remove("video-paused");
-  });
-
-  // PAUSE STATE
-  video.addEventListener("pause", () => {
-    container.classList.add("video-paused");
-    container.classList.remove("video-playing");
-  });
-
-  // END STATE
-  video.addEventListener("ended", () => {
+    video.pause();
     video.currentTime = 0;
     container.classList.add("video-paused");
-    container.classList.remove("video-playing");
+
+    // ✅ FIXED: cleaned play/pause handler (removed nested listener)
+    const playPauseHandler = (e) => {
+      e.preventDefault();
+
+      if (isScrolling) return;
+
+      document.querySelectorAll(".video-container video").forEach(v => {
+        if (v !== video) {
+          v.pause();
+          v.muted = true;
+
+          const c = v.closest(".video-container");
+          c.classList.remove("video-playing");
+          c.classList.add("video-paused");
+
+          const muteBtn = c.querySelector(".mute-btn");
+          if (muteBtn) muteBtn.textContent = "🔇";
+        }
+      });
+
+      if (video.paused) {
+        video.muted = false;
+        video.volume = 0;
+
+        video.play().catch(() => {});
+        fadeVolume(video, 1, 400);
+
+        container.classList.add("video-playing");
+        container.classList.remove("video-paused");
+
+        if (btn) btn.textContent = "🔊";
+
+        activeVideo = video;
+        updateInactiveVideos(video);
+
+      } else {
+        video.pause();
+
+        container.classList.add("video-paused");
+        container.classList.remove("video-playing");
+
+        if (btn) btn.textContent = "🔇";
+
+        activeVideo = null;
+        updateInactiveVideos(null);
+      }
+    };
+
+    // MOBILE vs DESKTOP
+    if (isMobile) {
+      container.addEventListener("touchstart", playPauseHandler);
+    } else {
+      container.addEventListener("click", playPauseHandler);
+    }
+
+    // MUTE BUTTON
+    btn?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      video.muted = !video.muted;
+      btn.textContent = video.muted ? "🔇" : "🔊";
+    });
+
+    btn?.addEventListener("touchstart", (e) => {
+      e.stopPropagation();
+    });
   });
 
-  // LOADING
-  video.addEventListener("waiting", () => {
-    container.classList.add("loading");
-  });
-
-  video.addEventListener("playing", () => {
-    container.classList.remove("loading");
-  });
-
-});
-
-
-// ✅ PLAY STATE
-video.addEventListener("play", () => {
-  container.classList.add("video-playing");
-  container.classList.remove("video-paused");
-});
-
-// ✅ PAUSE STATE
-video.addEventListener("pause", () => {
-  container.classList.add("video-paused");
-  container.classList.remove("video-playing");
-});
-
-// ✅ END STATE
-video.addEventListener("ended", () => {
-  video.currentTime = 0;
-  container.classList.add("video-paused");
-  container.classList.remove("video-playing");
-});
-
-// 🔥 LOADING STATE (PUT HERE ONLY ONCE)
-video.addEventListener("waiting", () => {
-  container.classList.add("loading");
-});
-
-video.addEventListener("playing", () => {
-  container.classList.remove("loading");
-});
-  });
-
-  // ========= BREAKDOWN VIDEOS (FIXED CLEAN VERSION) =========
+  // ========= BREAKDOWN VIDEOS =========
   document.querySelectorAll(".breakdown-video").forEach(container => {
     const video = container.querySelector("video");
     const btn = container.querySelector(".breakdown-mute-btn");
@@ -250,7 +210,6 @@ video.addEventListener("playing", () => {
       video.muted = false;
       video.volume = 0;
       video.play().catch(() => {});
-
       fadeVolume(video, 1, 400);
     });
   });
@@ -263,11 +222,9 @@ document.addEventListener("fullscreenchange", () => {
     const video = container.querySelector("video");
 
     if (document.fullscreenElement === video) {
-      // ✅ Enter fullscreen
       container.classList.add("fullscreen");
       video.controls = true;
     } else {
-      // ❌ Exit fullscreen
       container.classList.remove("fullscreen");
       video.controls = false;
     }
@@ -350,16 +307,19 @@ function sendMail() {
     time: new Date().toLocaleString(),
   };
 
+  // ✅ FIXED: validation before sending
+  if (!params.name || !params.email) {
+    alert("Please fill all fields");
+    return;
+  }
+
   emailjs
     .send("service_76bjicp", "template_pklxfm9", params)
     .then(() => alert("Email sent successfully!"))
     .catch(() => alert("Email failed"));
-    if (!params.name || !params.email) {
-  alert("Please fill all fields");
-  return;
-}
 }
 
+// ================= PROBLEM SECTION ANIMATION =================
 const problemSection = document.querySelector(".problem-section");
 
 const observer2 = new IntersectionObserver((entries) => {
@@ -371,8 +331,6 @@ const observer2 = new IntersectionObserver((entries) => {
 }, { threshold: 0.3 });
 
 if (problemSection) observer2.observe(problemSection);
-
-
 
 const cards = document.querySelectorAll(".problem-card");
 
